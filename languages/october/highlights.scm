@@ -14,11 +14,19 @@
 
 ; ===== Twig Section =====
 
+; HTML Content
+(content) @none
+
 ; Comments
 (comment) @comment
 
 ; Delimiters
-["{%" "%}" "{{" "}}"] @punctuation.bracket
+"{%" @punctuation.bracket
+"%}" @punctuation.bracket
+"{{" @punctuation.bracket
+"}}" @punctuation.bracket
+"{#" @punctuation.bracket
+"#}" @punctuation.bracket
 
 ; Keywords and Control Flow
 [

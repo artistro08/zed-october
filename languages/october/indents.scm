@@ -1,31 +1,33 @@
 ; Indentation for October CMS templates
 
 ; Increase indent for block-starting statements
-[
-  (if_statement)
-  (for_statement)
-  (block_statement)
-  (macro_statement)
-  (filter_statement)
-  (auto_escape_statement)
-  (verbatim_statement)
-  (apply_statement)
-  (embed_statement)
-] @indent
+(statement_directive
+  (if_statement)) @indent
+
+(statement_directive
+  (for_statement)) @indent
+
+(statement_directive
+  (block_statement)) @indent
+
+(statement_directive
+  (macro_statement)) @indent
+
+(statement_directive
+  (filter_statement)) @indent
+
+(statement_directive
+  (auto_escape_statement)) @indent
+
+(statement_directive
+  (verbatim_statement)) @indent
+
+(statement_directive
+  (apply_statement)) @indent
+
+(statement_directive
+  (embed_statement)) @indent
 
 ; Increase indent for data structures
 (array) @indent
 (hash) @indent
-
-; Dedent on closing keywords
-(generic_statement
-  tag: (
-    _ @dedent
-    (#match? @dedent "^end")
-  ))
-
-(generic_statement
-  tag: (
-    _ @dedent
-    (#match? @dedent "^(else|elseif)$")
-  ))

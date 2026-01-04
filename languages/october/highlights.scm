@@ -28,81 +28,37 @@
 "{#" @punctuation.bracket
 "#}" @punctuation.bracket
 
-; Keywords and Control Flow
-[
-  "set"
-  "if"
-  "elseif"
-  "else"
-  "endif"
-  "for"
-  "endfor"
-  "in"
-  "block"
-  "endblock"
-  "macro"
-  "endmacro"
-  "import"
-  "from"
-  "filter"
-  "endfilter"
-  "autoescape"
-  "endautoescape"
-  "do"
-  "flush"
-  "verbatim"
-  "endverbatim"
-  "apply"
-  "endapply"
-  "embed"
-  "endembed"
-  "use"
-  "end"
-  "endset"
-] @keyword
+; Statement types
+(set_statement) @keyword
+(if_statement) @keyword
+(for_statement) @keyword
+(block_statement) @keyword
+(macro_statement) @keyword
+(import_statement) @keyword
+(from_statement) @keyword
+(filter_statement) @keyword
+(auto_escape_statement) @keyword
+(do_statement) @keyword
+(flush_statement) @keyword
+(verbatim_statement) @keyword
+(apply_statement) @keyword
+(embed_statement) @keyword
+(use_statement) @keyword
 
-; October CMS specific tags
-[
-  "page"
-  "partial"
-  "ajaxPartial"
-  "component"
-  "content"
-  "placeholder"
-  "flash"
-] @keyword.special
+; October CMS specific statements
+(page_statement) @keyword.special
+(partial_statement) @keyword.special
+(component_statement) @keyword.special
+(content_statement) @keyword.special
+(placeholder_statement) @keyword.special
+(flash_statement) @keyword.special
 
-; Operators
-[
-  "or"
-  "and"
-  "not"
-  "in"
-  "is"
-  "=="
-  "!="
-  "<"
-  ">"
-  "<="
-  ">="
-  "+"
-  "-"
-  "*"
-  "/"
-  "//"
-  "%"
-  "**"
-  "~"
-  "??"
-  ".."
-  "b-and"
-  "b-or"
-  "b-xor"
-  "matches"
-  "starts with"
-  "ends with"
-  "not in"
-] @operator
+; Generic statements
+(generic_statement) @keyword
+
+; Operators (binary and unary expressions)
+(binary_expression) @operator
+(unary_expression) @operator
 
 ; Punctuation
 [":" "," "." "|"] @punctuation.delimiter

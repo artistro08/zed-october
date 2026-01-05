@@ -8,4 +8,4 @@ repository = "https://github.com/artistro08/zed-october"
 
 [grammars.october]
 repository = "https://github.com/artistro08/tree-sitter-october"
-rev = "dde0c4c"
+rev = "dde0c4c0457cb999a5a1c4460ab49e3d0464e36f"

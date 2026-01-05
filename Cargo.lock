@@ -754,8 +754,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "zed-twig"
-version = "0.3.0"
+name = "zed-october"
+version = "0.1.0"
 dependencies = [
  "zed_extension_api",
 ]

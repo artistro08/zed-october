@@ -1,13 +1,20 @@
 # Changelog
 
-## [0.3.4] - 2026-01-05
+## [0.3.5] - 2026-01-05
 
 ### Fixed
-- **PHP syntax highlighting now works in Zed!**
+- **Restructured PHP code for better injection compatibility**
+- Changed `php_code` from single token to structured nodes with children
+- `php_code` now explicitly contains: `<?php` tag, `php_content` node, optional `?>` tag
+- Structured approach should work better with Zed's language injection system
+- PHP content parsing still correctly handles all PHP syntax including `==` operators
+
+## [0.3.4] - 2026-01-05
+
+### Fixed (Partial - superseded by v0.3.5)
 - Restructured `_php_code_with_tags` to include `<?php` and `?>` tags within the `php_code` node
 - tree-sitter-php injection now receives complete PHP code with required opening tag
 - Simplified injection query to directly inject `php_code` node as PHP language
-- All PHP syntax (operators, strings, backslashes, null) now highlights correctly
 
 ## [0.3.3] - 2026-01-05
 

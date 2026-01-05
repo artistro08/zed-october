@@ -1,12 +1,20 @@
 # Changelog
 
-## [0.3.6] - 2026-01-05
+## [0.3.7] - 2026-01-05
 
 ### Fixed
-- **Added include-children directive to PHP injection**
+- **PHP code now uses raw text token pattern (like tree-sitter-html)**
+- Changed `php_code` from structured node to single raw text token
+- This matches the injection pattern used by tree-sitter-html for script/style tags
+- `php_code` is now a single token containing the entire PHP section with tags
+- Removed `include-children` directive (no longer needed)
+- This should finally fix PHP syntax highlighting in Zed!
+
+## [0.3.6] - 2026-01-05
+
+### Fixed (Partial - superseded by v0.3.7)
+- Added include-children directive to PHP injection
 - PHP injection now uses `#set! injection.include-children` to capture all text content
-- This ensures the full PHP code (tags + content) is passed to tree-sitter-php
-- Should fix PHP syntax highlighting in Zed
 
 ## [0.3.5] - 2026-01-05
 

@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.3.0] - 2026-01-05
+
+### Added
+- ✅ **Full working section recognition for all October CMS template types!**
+- INI configuration section with support for:
+  - Key-value pairs
+  - Section headers `[section]`
+  - Array-style keys `key[index] = value`
+- PHP code section with `<?php ?>` tag recognition
+- Twig markup section with complete syntax highlighting
+- Section delimiter (`==`) detection via external C scanner
+
+### Changed
+- Redesigned `content` rule to explicitly exclude PHP tags and section delimiters
+- Applied aggressive precedence (prec 100) to section rules
+- Made content rule token-based with very low precedence (-100) as last resort
+- Re-enabled newlines in extras for proper whitespace handling
+
+### Fixed
+- **Section recognition now works correctly!** All three sections parse properly
+- HTML content in Twig sections now highlights correctly
+- INI settings with array keys (e.g., `localeUrl[en]`) now parse correctly
+
 ## [0.2.1] - 2026-01-05
 
 ### Added
@@ -11,10 +34,10 @@
 - Switched to external scanner for section delimiter detection
 - Simplified grammar structure for better maintainability
 
-### Known Limitations
-- Section recognition (INI and PHP) is still in development
-- Currently provides excellent Twig syntax highlighting
-- Full multi-section template parsing coming in future releases
+### Known Limitations (RESOLVED in v0.3.0)
+- ~~Section recognition (INI and PHP) is still in development~~
+- ~~Currently provides excellent Twig syntax highlighting~~
+- ~~Full multi-section template parsing coming in future releases~~
 
 ## [0.2.0] - 2026-01-05
 

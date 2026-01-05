@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.3.1] - 2026-01-05
+
+### Fixed
+- **PHP syntax highlighting in php_code sections now works perfectly!**
+- Added language injection to parse PHP code using tree-sitter-php
+- Quotes, backslashes, and escape sequences in PHP strings now highlight correctly
+- PHP keywords, variables, functions, and comments all properly highlighted
+- Fixes issues with strings like `'Content\Settings'` breaking syntax highlighting
+
 ## [0.3.0] - 2026-01-05
 
 ### Added

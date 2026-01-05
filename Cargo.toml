@@ -1,0 +1,13 @@
+[package]
+name = "zed-october"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+authors = ["Devin Green (artistro08)"]
+description = "October CMS language support for Zed"
+
+[dependencies]
+zed_extension_api = "0.7.0"
+
+[lib]
+crate-type = ["cdylib"]

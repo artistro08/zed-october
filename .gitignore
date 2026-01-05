@@ -1,0 +1,6 @@
+# zed-twig
+*.wasm
+/grammars
+
+# Rust
+/target

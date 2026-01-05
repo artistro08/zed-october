@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.3.9] - 2026-01-05
+
+### Fixed
+- **Restructured PHP injection to match HTML pattern exactly**
+- `php_code` now has separate child nodes: `<?php` tag, `php_content` token, `?>` tag
+- Injecting the whole `php_code` node (tags as children) like HTML `content` works
+- No longer using monolithic single-token approach
+- `php_content` is just the raw PHP code (like HTML `content` is raw HTML)
+- This structural approach should work better with Zed's injection system
+
 ## [0.3.8] - 2026-01-05
 
 ### Fixed
@@ -9,7 +19,6 @@
 - Zed shorthand: `@content` + `#set! language`
 - Both PHP and HTML injections now use dual syntax
 - Fixes compatibility with all Zed versions (historical shorthand + current standard support)
-- **This should finally enable PHP and HTML syntax highlighting!**
 
 ## [0.3.7] - 2026-01-05
 

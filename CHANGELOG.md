@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.3.8] - 2026-01-05
+
+### Fixed
+- **Added Zed shorthand injection syntax for compatibility**
+- Injections.scm now includes both standard tree-sitter syntax and Zed shorthand syntax
+- Standard: `@injection.content` + `#set! injection.language`
+- Zed shorthand: `@content` + `#set! language`
+- Both PHP and HTML injections now use dual syntax
+- Fixes compatibility with all Zed versions (historical shorthand + current standard support)
+- **This should finally enable PHP and HTML syntax highlighting!**
+
 ## [0.3.7] - 2026-01-05
 
 ### Fixed
@@ -8,7 +19,6 @@
 - This matches the injection pattern used by tree-sitter-html for script/style tags
 - `php_code` is now a single token containing the entire PHP section with tags
 - Removed `include-children` directive (no longer needed)
-- This should finally fix PHP syntax highlighting in Zed!
 
 ## [0.3.6] - 2026-01-05
 

@@ -1,13 +1,25 @@
 # Changelog
 
-## [0.3.2] - 2026-01-05
+## [0.3.3] - 2026-01-05
 
 ### Fixed
-- **PHP syntax highlighting now truly working!**
-- Changed injection from `php_code` to `php_section` node (includes `<?php` tag)
-- tree-sitter-php needs the opening tag to properly parse PHP code
-- Backslashes in strings like `'Content\Settings'` now highlight correctly
-- All PHP syntax elements (keywords, strings, variables, comments) properly colored
+- **Complete fix for PHP parsing and syntax highlighting!**
+- Fixed `_php_code` pattern to handle `==` operator in PHP code
+- Old pattern `/[^=?]+|=[^=]|[?][^>]/` stopped at `==`, breaking on code like `if ($x == null)`
+- New pattern `/([^?]+|\?[^>])+/` correctly matches all PHP until `?>` tag
+- Removed invalid node types from injections.scm that were causing query errors
+- PHP injection now works correctly with full PHP syntax support
+- Tested with complex PHP code including:
+  - Equality operators (`==`)
+  - Backslashes in strings (`'Content\Settings'`)
+  - Null checks
+  - Arrays and object access
+
+## [0.3.2] - 2026-01-05
+
+### Fixed (Partial - superseded by v0.3.3)
+- Attempted fix by injecting `php_section` instead of `php_code`
+- Still had parsing issues due to `==` operator breaking the pattern
 
 ## [0.3.1] - 2026-01-05
 

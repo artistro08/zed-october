@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.3.4] - 2026-01-05
+
+### Fixed
+- **PHP syntax highlighting now works in Zed!**
+- Restructured `_php_code_with_tags` to include `<?php` and `?>` tags within the `php_code` node
+- tree-sitter-php injection now receives complete PHP code with required opening tag
+- Simplified injection query to directly inject `php_code` node as PHP language
+- All PHP syntax (operators, strings, backslashes, null) now highlights correctly
+
 ## [0.3.3] - 2026-01-05
 
 ### Fixed

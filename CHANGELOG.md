@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.6] - 2026-01-05
+
+### Fixed
+- **Added include-children directive to PHP injection**
+- PHP injection now uses `#set! injection.include-children` to capture all text content
+- This ensures the full PHP code (tags + content) is passed to tree-sitter-php
+- Should fix PHP syntax highlighting in Zed
+
 ## [0.3.5] - 2026-01-05
 
 ### Fixed

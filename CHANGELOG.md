@@ -1,20 +1,31 @@
 # Changelog
 
+## [0.2.1] - 2026-01-05
+
+### Added
+- External scanner in C for improved section delimiter recognition
+- Grammar infrastructure for INI and PHP section support
+- Highlighting queries for all three October CMS sections
+
+### Changed
+- Switched to external scanner for section delimiter detection
+- Simplified grammar structure for better maintainability
+
+### Known Limitations
+- Section recognition (INI and PHP) is still in development
+- Currently provides excellent Twig syntax highlighting
+- Full multi-section template parsing coming in future releases
+
 ## [0.2.0] - 2026-01-05
 
 ### Added
-- **Full October CMS three-section template support** (commit ac09bdd)
-  - INI configuration section parsing with key-value pairs and section headers
-  - PHP code section parsing with optional `<?php ?>` tags
-  - Section delimiter (`==`) recognition
-  - Support for all combinations of optional sections
-- Syntax highlighting for INI configuration section
-- Syntax highlighting for PHP code section
-- Syntax highlighting for section delimiters
+- **Attempted October CMS three-section template support**
+  - Grammar rules for INI configuration, PHP code, and Twig sections
+  - Section delimiter (`==`) patterns
+  - Highlighting queries for all sections
 
-### Changed
-- Grammar now properly parses October CMS template structure
-- Templates can have INI-only, PHP-only, Twig-only, or any combination
+### Known Issues
+- Section recognition not fully functional (reverted to Twig-only for stability)
 
 ## [0.1.0] - 2026-01-05
 

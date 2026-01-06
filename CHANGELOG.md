@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.6.1] - 2026-01-05
+
+### Fixed - THE ACTUAL PROBLEM!
+- **Updated `languages/october/injections.scm` with INI and PHP injections**
+- **ROOT CAUSE**: Zed reads query files from `languages/<lang>/` directory, NOT from the grammar's `queries/` directory
+- The tree-sitter grammar had all injections defined correctly
+- But the Zed extension's `languages/october/injections.scm` was outdated and only had HTML
+- Now all three injections (INI, PHP, HTML) are in the extension directory
+- **Injections should now work!**
+
+### Investigation Summary
+Through thorough research, discovered that:
+1. Zed extensions use query files from `languages/<language-name>/` directory
+2. Grammar's `queries/` directory is NOT used by Zed
+3. We had been updating the wrong file location this whole time
+4. Based on Zed extension structure documentation and analysis of working extensions
+
 ## [0.6.0] - 2026-01-05
 
 ### Added

@@ -1,6 +1,6 @@
 id = "october"
 name = "October CMS"
-version = "0.6.0"
+version = "0.6.1"
 schema_version = 1
 authors = ["Devin Green <artistro08@users.noreply.github.com>"]
 description = "Syntax highlighting for October CMS templates in Zed"

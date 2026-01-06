@@ -1,14 +1,25 @@
 # Changelog
 
-## [0.4.1] - 2026-01-05
+## [0.5.0] - 2026-01-05
 
-### Fixed
-- **Changed injection language to "php_only"** instead of "php"
-- tree-sitter-blade uses "php_only" for PHP code block injections
-- This might be required for Zed's PHP injection system
+### Fixed - THE REAL FIX
+- **Inject `php_only` node containing ONLY content (no `<?php` tags)**
+- Restructured to match tree-sitter-blade exactly:
+  - `php_code` = parent node with children: `'<?php'` + `php_only` + `'?>'`
+  - `php_only` = LEAF TOKEN containing ONLY the PHP code (no tags)
+- Inject `php_only` node with `php_only` language
+- tree-sitter-php's `php_only` dialect expects content WITHOUT the `<?php` tag
+- Previous versions included tags in the injection, which broke tree-sitter-php
 - Based on: https://github.com/EmranMR/tree-sitter-blade
 
-## [0.4.0] - 2026-01-05
+## [0.4.1] - 2026-01-05 (BROKEN - still had tags in injection)
+
+### Fixed
+- Changed injection language to "php_only" instead of "php"
+- tree-sitter-blade uses "php_only" for PHP code block injections
+- Based on: https://github.com/EmranMR/tree-sitter-blade
+
+## [0.4.0] - 2026-01-05 (BROKEN - had tags in injection)
 
 ### Fixed - CRITICAL
 - **PHP injection structure fixed - using leaf nodes**

@@ -1,6 +1,26 @@
 # Changelog
 
-## [0.7.0] - 2026-01-05
+## [0.7.1] - 2026-01-05
+
+### Fixed
+- **COMPLETE FIX: All template combinations now work perfectly!**
+- Fixed INI+Twig templates (without PHP section) - the "common case" that wasn't working
+- Changed INI pattern to only match lines starting with valid INI characters
+- Pattern: `/([a-zA-Z_\[][^\r\n]*\r?\n|\r?\n)+/` matches:
+  - Lines starting with letters, underscores, or `[` (section headers)
+  - Blank lines
+  - Stops at `==` delimiter (lines starting with `=`)
+  - Stops at PHP tags (lines starting with `<`)
+
+### Template Support (ALL WORKING)
+- ✅ All three sections (INI + PHP + Twig)
+- ✅ INI + Twig (no PHP) - **FIXED IN THIS VERSION!**
+- ✅ PHP + Twig (no INI)
+- ✅ Twig only (no sections)
+
+Thanks to analysis of the october-code VS Code extension for inspiration on the solution approach.
+
+## [0.7.0] - 2026-01-05 (INCOMPLETE - had known limitation)
 
 ### Added
 - **Support for templates with optional sections!**
@@ -8,14 +28,7 @@
   - ✅ All three sections (INI + PHP + Twig) - Full support
   - ✅ PHP + Twig (no INI configuration) - Full support
   - ✅ Twig only (no INI or PHP) - Full support
-  - ⚠️ INI + Twig (no PHP) - Known limitation*
-
-*Note: Templates with INI configuration but no PHP section may not parse correctly. This is a rare edge case since most October templates that have configuration also include PHP code.
-
-### Technical Details
-- INI content pattern: `/([^<\r\n]+|\r?\n)+/` matches until `<?php` or external scanner's `==`
-- PHP section properly detects `<?php` opening tag
-- Twig section acts as fallback for pure HTML templates
+  - ⚠️ INI + Twig (no PHP) - Known limitation (FIXED IN v0.7.1)
 
 ## [0.6.1] - 2026-01-05
 

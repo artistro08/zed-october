@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.7.0] - 2026-01-05
+
+### Added
+- **Support for templates with optional sections!**
+- Templates can now have any combination of sections:
+  - ✅ All three sections (INI + PHP + Twig) - Full support
+  - ✅ PHP + Twig (no INI configuration) - Full support
+  - ✅ Twig only (no INI or PHP) - Full support
+  - ⚠️ INI + Twig (no PHP) - Known limitation*
+
+*Note: Templates with INI configuration but no PHP section may not parse correctly. This is a rare edge case since most October templates that have configuration also include PHP code.
+
+### Technical Details
+- INI content pattern: `/([^<\r\n]+|\r?\n)+/` matches until `<?php` or external scanner's `==`
+- PHP section properly detects `<?php` opening tag
+- Twig section acts as fallback for pure HTML templates
+
 ## [0.6.1] - 2026-01-05
 
 ### Fixed - THE ACTUAL PROBLEM!
@@ -8,7 +25,7 @@
 - The tree-sitter grammar had all injections defined correctly
 - But the Zed extension's `languages/october/injections.scm` was outdated and only had HTML
 - Now all three injections (INI, PHP, HTML) are in the extension directory
-- **Injections should now work!**
+- **Injections now work!**
 
 ### Investigation Summary
 Through thorough research, discovered that:

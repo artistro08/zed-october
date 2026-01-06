@@ -1,8 +1,23 @@
 # Changelog
 
+## [0.6.0] - 2026-01-05
+
+### Added
+- **INI section syntax highlighting support!**
+- Added tree-sitter-ini grammar to extension
+- Restructured configuration_section to use single `ini_content` leaf token
+- INI injection now working (all three sections use leaf tokens)
+- Based on: https://github.com/justinmk/tree-sitter-ini
+
+### Summary
+All three sections now properly structured for Zed injection:
+- INI: `ini_content` leaf token → inject as "ini"
+- PHP: `php_only` leaf token → inject as "php_only"
+- Twig: `content` leaf token → inject as "html"
+
 ## [0.5.0] - 2026-01-05
 
-### Fixed - THE REAL FIX
+### Fixed - THE REAL FIX (for PHP structure)
 - **Inject `php_only` node containing ONLY content (no `<?php` tags)**
 - Restructured to match tree-sitter-blade exactly:
   - `php_code` = parent node with children: `'<?php'` + `php_only` + `'?>'`

@@ -1,6 +1,17 @@
 # Changelog
 
-## [0.3.9] - 2026-01-05
+## [0.4.0] - 2026-01-05
+
+### Fixed - CRITICAL
+- **PHP injection now works! Fixed the root cause.**
+- **Zed only applies injections to LEAF NODES (nodes without children)**
+- Changed `php_code` back to a single leaf token with NO child nodes
+- Previous versions had child nodes (tags + content) which prevented injection
+- `php_code` is now one atomic token containing `<?php`, content, and `?>`
+- This matches why HTML `content` works - it's also a leaf token
+- Based on: https://github.com/zed-industries/extensions/issues/484
+
+## [0.3.9] - 2026-01-05 (BROKEN - had child nodes)
 
 ### Fixed
 - **Restructured PHP injection to match HTML pattern exactly**

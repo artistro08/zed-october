@@ -8,7 +8,7 @@ repository = "https://github.com/artistro08/zed-october"
 
 [grammars.october]
 repository = "https://github.com/artistro08/tree-sitter-october"
-rev = "c4c029d34839b6ffb39dde9391b0f0a6ce9a1a48"
+rev = "6085e31b3a904eb4f08b67fdd03f8436ee731825"
 
 [grammars.ini]
 repository = "https://github.com/justinmk/tree-sitter-ini"

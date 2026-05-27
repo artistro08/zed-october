@@ -1,6 +1,6 @@
 id = "october"
 name = "October CMS"
-version = "0.1.0"
+version = "0.2.1"
 schema_version = 1
 authors = ["Devin Green <design@devingreen.me>"]
 description = "Syntax highlighting for October CMS templates in Zed"
@@ -8,8 +8,12 @@ repository = "https://github.com/artistro08/zed-october"
 
 [grammars.october]
 repository = "https://github.com/artistro08/tree-sitter-october"
-rev = "96518815dbf487247b60647e876f2b80874e1bbc"
+rev = "c4c029d34839b6ffb39dde9391b0f0a6ce9a1a48"
 
 [grammars.ini]
 repository = "https://github.com/justinmk/tree-sitter-ini"
 rev = "e4018b5176132b4f3c5d6e61cea383f42288d0f5"
+
+[grammars.twig]
+repository = "https://github.com/gbprod/tree-sitter-twig"
+rev = "0afd9a6d808944e65a7be393e31868b85345735f"

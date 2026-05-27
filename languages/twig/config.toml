@@ -1,8 +1,12 @@
-name = "October CMS"
-grammar = "october"
-path_suffixes = ["htm"]
+name = "Twig"
+grammar = "twig"
+path_suffixes = []
+hidden = true
 autoclose_before = "}])>"
+block_comment = ["{# ", " #}"]
 brackets = [
+    { start = "{{", end = "}}", close = true, newline = true },
+    { start = "{%", end = "%}", close = true, newline = true },
     { start = "{", end = "}", close = true, newline = true },
     { start = "[", end = "]", close = true, newline = true },
     { start = "(", end = ")", close = true, newline = true },

@@ -1,13 +1,14 @@
-; INI configuration section injection
+; INI configuration section
 ((ini_content) @injection.content
-  (#set! injection.language "ini"))
+  (#set! injection.language "ini")
+  (#set! injection.combined))
 
-; PHP code injection - inject only the content (no <?php tags)
-; php_only node contains just the PHP code, matching tree-sitter-blade approach
-((php_only) @injection.content
-  (#set! injection.language "php_only"))
+; PHP code section - inject as php_only (tag-less PHP dialect)
+((php_content) @injection.content
+  (#set! injection.language "php_only")
+  (#set! injection.combined))
 
-; HTML content in Twig section
-((content) @injection.content
- (#set! injection.language "html")
- (#set! injection.combined))
+; Twig template section
+((twig_content) @injection.content
+  (#set! injection.language "twig")
+  (#set! injection.combined))

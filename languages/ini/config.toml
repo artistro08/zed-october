@@ -1,8 +1,11 @@
-name = "INI"
+# Injected into the configuration section of an October `.htm` file. Named
+# "October INI" so it cannot collide with a standalone INI extension.
+name = "October INI"
 grammar = "ini"
 path_suffixes = []
 hidden = true
 line_comments = ["; ", "# "]
+autoclose_before = ":.,=}])>"
 brackets = [
     { start = "[", end = "]", close = true, newline = false },
     { start = "\"", end = "\"", close = true, newline = false, not_in = ["comment", "string"] },

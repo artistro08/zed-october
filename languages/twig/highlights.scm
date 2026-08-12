@@ -1,38 +1,44 @@
-(comment) @comment @spell
+(comment) @comment
 
-(filter_identifier) @function.call
+; Tag names: `if`, `for`, `set`, `endif`, plus October's `partial`,
+; `component`, `placeholder`, `scripts`, `styles`, `put`, `framework`, ...
+(keyword) @keyword
 
-(function_identifier) @function.call
+(conditional) @keyword
 
-(test) @function.builtin
+(repeat) @keyword
+
+(tag) @keyword
+
+(attribute) @keyword
+
+(filter_identifier) @function
+
+(function_identifier) @function
+
+(method) @function
+
+(test) @function
 
 (variable) @variable
+
+(parameter) @variable.parameter
+
+(argument_name) @variable.parameter
+
+(name) @property
 
 (string) @string
 
 (interpolated_string) @string
 
-(operator) @operator
-
 (number) @number
 
 (boolean) @boolean
 
-(null) @constant.builtin
+(null) @constant
 
-(keyword) @keyword
-
-(attribute) @attribute
-
-(tag) @tag
-
-(conditional) @keyword.conditional
-
-(repeat) @keyword.repeat
-
-(method) @function.method
-
-(parameter) @variable.parameter
+(operator) @operator
 
 [
   "{{"
@@ -59,6 +65,7 @@
   ":"
   "="
   "|"
+  "=>"
 ] @operator
 
 (interpolated_string

@@ -1,17 +1,22 @@
-name = "Twig"
-grammar = "twig"
+# Injected into the Twig section of an October `.htm` file. Named "October
+# Twig" rather than "Twig" so it cannot collide with a standalone Twig
+# extension - Zed resolves injection languages by name, and two languages
+# sharing one name resolve in extension load order.
+name = "October Twig"
+grammar = "october_twig"
 path_suffixes = []
 hidden = true
-autoclose_before = "}])>"
 block_comment = ["{# ", " #}"]
+autoclose_before = "}])>"
 brackets = [
-    { start = "{{", end = "}}", close = true, newline = true },
-    { start = "{%", end = "%}", close = true, newline = true },
-    { start = "{", end = "}", close = true, newline = true },
+    { start = "{{", end = "}}", close = true, newline = false },
+    { start = "{%", end = "%}", close = true, newline = false },
+    { start = "{#", end = "#}", close = true, newline = false },
+    # No single `{` pair: it would fire first and turn a typed `{{` into `{{}}}`.
     { start = "[", end = "]", close = true, newline = true },
     { start = "(", end = ")", close = true, newline = true },
     { start = "'", end = "'", close = true, newline = false, not_in = ["comment", "string"] },
     { start = "\"", end = "\"", close = true, newline = false, not_in = ["comment", "string"] },
-    { start = "<", end = ">", close = true, newline = true, not_in = ["comment", "string"] },
+    { start = "<", end = ">", close = false, newline = true, not_in = ["comment", "string"] },
 ]
 word_characters = ["-"]

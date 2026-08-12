@@ -1,6 +1,3 @@
-# zed-twig
+# Compiled grammars, checked out and built by Zed
 *.wasm
 /grammars
-
-# Rust
-/target

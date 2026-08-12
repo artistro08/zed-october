@@ -44,6 +44,26 @@ Use `["htm"]` instead of the glob if every `.htm` file you edit is an October te
 Install the **HTML** Zed extension. The template section injects it for the markup between
 Twig tags, and it is what supplies HTML indentation and `<style>` / `<script>` highlighting.
 
+### Emmet
+
+Emmet binds to languages by name inside its own manifest, and a language extension cannot
+attach a language server owned by another extension — Zed's language `config.toml` has no
+key for it. So `October CMS` has to be listed by the **Emmet** extension itself:
+
+```toml
+# zed-extensions/emmet, extension.toml
+[language_servers.emmet-language-server]
+languages = [..., "October CMS", ...]
+
+[language_servers.emmet-language-server.language_ids]
+"October CMS" = "html"
+```
+
+Until that lands upstream, patch your installed copy at
+`~/.local/share/zed/extensions/installed/emmet/extension.toml` (on Windows,
+`%LOCALAPPDATA%\Zed\extensions\installed\emmet\extension.toml`) and restart Zed. Note that
+an Emmet update overwrites it.
+
 ## October CMS Template Structure
 
 October CMS templates consist of up to three sections separated by `==`:

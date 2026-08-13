@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.4.1] - 2026-08-12
+
+### Changed
+- **Twig delimiters autoclose with the spacing Twig is written in.** Type `{%` then a space
+  and you get `{% | %}` with the cursor in the middle, likewise `{{ }}` and `{# #}`. The
+  space lives in the pair's `start`, because Zed fires a pair when the character you just
+  typed is the last character of `start` and the buffer already holds the rest — so the
+  space is the trigger. The unspaced pair is gone rather than kept alongside: it matches on
+  `%` first, and the space would then fire the spaced pair too, giving `{% | %} %}`.
+- `autoclose_before` now includes `<`. Autoclose is gated on the character after the cursor;
+  whitespace and end-of-line always pass, but without `<` the delimiters stayed closed when
+  typing immediately before a tag.
+
 ## [0.4.0] - 2026-08-12
 
 ### Fixed

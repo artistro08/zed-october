@@ -11,14 +11,18 @@ grammar = "html"
 path_suffixes = []
 hidden = true
 block_comment = { start = "<!--", prefix = "", end = "-->", tab_size = 0 }
-autoclose_before = "}])>"
+autoclose_before = "<}])>"
 wrap_characters = { start_prefix = "<", start_suffix = ">", end_prefix = "</", end_suffix = ">" }
 brackets = [
-    # Twig delimiters first: a bare `{` pair would match on the opening brace
-    # and turn a typed `{{` into `{{}}}`.
-    { start = "{{", end = "}}", close = true, newline = false },
-    { start = "{%", end = "%}", close = true, newline = false },
-    { start = "{#", end = "#}", close = true, newline = false },
+    # No single `{` pair: it would close on the first brace of `{{`.
+    # The space is part of `start`. Zed matches a pair when the character you
+    # just typed is the last character of `start` and the buffer already holds
+    # the rest, so typing `{%` then space gives `{% | %}` - Twig's own spacing.
+    # A pair without the trailing space cannot coexist with these: it would
+    # match on `%` first, and the space would then fire this one too.
+    { start = "{{ ", end = " }}", close = true, newline = false },
+    { start = "{% ", end = " %}", close = true, newline = false },
+    { start = "{# ", end = " #}", close = true, newline = false },
     { start = "[", end = "]", close = true, newline = true },
     { start = "(", end = ")", close = true, newline = true },
     { start = "\"", end = "\"", close = true, newline = false, not_in = ["comment", "string"] },

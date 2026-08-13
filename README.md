@@ -12,7 +12,8 @@ Syntax highlighting for [October CMS](https://octobercms.com/) templates in the 
 - Empty sections supported (file may start with `==` or have back-to-back `==` lines)
 - Auto-indent: new lines indent like HTML, and Twig block tags (`{% if %}`, `{% for %}`,
   `{% block %}`, …) indent their bodies and outdent their `{% end… %}`
-- Bracket matching and autoclose for `{{ }}`, `{% %}` and `{# #}`
+- Bracket matching, and autoclose for the Twig delimiters — type `{%` then a space and you
+  get `{% | %}`, cursor in the middle, same for `{{ }}` and `{# #}`
 - Language servers per section — PHP, HTML, Twig and Emmet — each scoped to the part of the
   template it understands (see [Language servers](#language-servers))
 - Support for `.htm` template files
@@ -212,6 +213,12 @@ takes bracket pairs from the syntax layer under the cursor. While you are typing
 buffer still reads `{`, so that layer is still the markup one — the stock HTML config offers
 `{` → `}` and no `{%`, which produced `{%}`. `languages/october-html/config.toml` is that
 config with the Twig delimiters added.
+
+Those delimiters carry the space in `start` — `{% ` → ` %}`, not `{%` → `%}`. Zed fires a
+pair when the character you just typed is the last character of `start` and the buffer
+already holds the rest, so putting the space there makes the space itself the trigger and
+lands the cursor as `{% | %}`. The unspaced pair cannot be kept alongside it: it would match
+on `%` first, and the space would then fire the spaced one too, giving `{% | %} %}`.
 
 That vendored copy also teaches the grammar October's named tag parameters —
 `{% partial 'site/footer' year=2026 %}`, `{% component 'blogPosts' k=1 %}` — which are not

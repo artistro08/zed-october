@@ -1,12 +1,17 @@
 name = "October CMS"
 grammar = "october"
 path_suffixes = ["htm"]
-autoclose_before = "}])>"
+autoclose_before = "<}])>"
 brackets = [
-    { start = "{{", end = "}}", close = true, newline = false },
-    { start = "{%", end = "%}", close = true, newline = false },
-    { start = "{#", end = "#}", close = true, newline = false },
-    # No single `{` pair: it would fire first and turn a typed `{{` into `{{}}}`.
+    # The space is part of `start`. Zed matches a pair when the character you
+    # just typed is the last character of `start` and the buffer already holds
+    # the rest, so typing `{%` then space gives `{% | %}` - Twig's own spacing.
+    # A pair without the trailing space cannot coexist with these: it would
+    # match on `%` first, and the space would then fire this one too.
+    { start = "{{ ", end = " }}", close = true, newline = false },
+    { start = "{% ", end = " %}", close = true, newline = false },
+    { start = "{# ", end = " #}", close = true, newline = false },
+    # No single `{` pair: it would close on the first brace of `{{`.
     { start = "[", end = "]", close = true, newline = true },
     { start = "(", end = ")", close = true, newline = true },
     { start = "'", end = "'", close = true, newline = false, not_in = ["comment", "string"] },

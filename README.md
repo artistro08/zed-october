@@ -1,6 +1,7 @@
 # October CMS for Zed
 
-Syntax highlighting for [October CMS](https://octobercms.com/) templates in the Zed editor.
+Syntax highlighting, auto-indent, language servers and clickable partial links for
+[October CMS](https://octobercms.com/) templates in the Zed editor.
 
 ## Features
 
@@ -14,7 +15,8 @@ Syntax highlighting for [October CMS](https://octobercms.com/) templates in the 
   `{% block %}`, …) indent their bodies and outdent their `{% end… %}`
 - Bracket matching, and autoclose for the Twig delimiters — type `{%` then a space and you
   get `{% | %}`, cursor in the middle, same for `{{ }}` and `{# #}`
-- Language servers per section — PHP, HTML, Twig and Emmet — each scoped to the part of the
+- Cmd-click a `{% partial %}`, `{% content %}` or INI `layout` reference to open the file
+- Language servers per section — PHP, HTML and Emmet — each scoped to the part of the
   template it understands (see [Language servers](#language-servers))
 - Support for `.htm` template files
 
@@ -48,16 +50,49 @@ autoclose all work on a fresh install.
 
 ## Language servers
 
-Three servers run on a template, installed from npm on first use. Nothing else needs to be
-installed, and no other extension needs to be patched.
+Four servers run on a template. Nothing else needs to be installed, and no other extension
+needs to be patched.
 
-| Server | Serves | npm package |
+| Server | Serves | Source |
 |---|---|---|
-| `intelephense` | PHP section | `intelephense` |
-| `vscode-html-language-server` | markup in the template section | `@zed-industries/vscode-langservers-extracted` |
-| `emmet-language-server` | abbreviations in the template section | `@olrtg/emmet-language-server` |
+| `october-language-server` | clickable partial / content / layout links | bundled in this extension |
+| `intelephense` | PHP section | npm `intelephense` |
+| `vscode-html-language-server` | markup in the template section | npm `@zed-industries/vscode-langservers-extracted` |
+| `emmet-language-server` | abbreviations in the template section | npm `@olrtg/emmet-language-server` |
 
-If any of these is already on your `PATH`, that copy is used instead of a downloaded one.
+The npm ones install on first use; a copy already on your `PATH` is preferred.
+
+### Partial links
+
+Cmd-click (ctrl-click on Linux/Windows) a template reference to open it:
+
+```twig
+{% partial 'site/footer' %}     ->  <theme>/partials/site/footer.htm
+{% content 'contact.htm' %}     ->  <theme>/content/contact.htm
+layout = "default"              ->  <theme>/layouts/default.htm
+```
+
+Resolution follows October's own rules: `.htm` is appended only when the reference does
+not already carry an extension, and a reference the current theme does not have falls
+through to the theme named by `parent:` in its `theme.yaml`, up the whole chain. A link
+appears only when the file actually exists, so a reference that stays unstyled is a
+reference that will not resolve at runtime either.
+
+Two forms are deliberately left alone:
+
+- `{% partial '@name' %}` — a component partial. Resolving it means mapping the component
+  alias in the INI section to a plugin's `components/` directory, which means reading that
+  plugin's `registerComponents()` out of PHP. In a real theme this was 3 references out of 63.
+- `{% partial 'builder/sections/' ~ section.type %}` — the name is computed at runtime, so
+  there is nothing to resolve statically.
+
+This needs a language server: Zed's cmd-click support runs on LSP `textDocument/documentLink`,
+its built-in path detection only tries the string relative to the worktree root and to the
+file's own directory (never `partials/`), and the extension API has no hook for producing
+links from wasm. The server is ~200 lines of dependency-free Node, bundled inside
+`extension.wasm` via `include_str!` and written back out at startup — the packager copies
+only a fixed allowlist of paths, so a `server/` directory would be dropped from a published
+build and the feature would work in development and be missing for everyone else.
 
 ### Why there is no Twig server
 
@@ -74,15 +109,16 @@ either, so there was nothing to offset the false positives.
 
 ### How they are scoped
 
-Zed attaches language servers per buffer, not per injected layer, so all four receive the
-whole file. Each is handed the LSP language id of the section it cares about — the rest
-degrades to inert text, since PHP treats anything outside `<?php ?>` as inline HTML and
-Twig treats it as literal content.
+Zed attaches language servers per buffer, not per injected layer, so every one of them
+receives the whole file. Each borrowed server is handed the LSP language id of the section
+it cares about, and the rest degrades to inert text — PHP treats anything outside
+`<?php ?>` as inline HTML, and the HTML server treats the rest as text.
 
 On top of that, `scope_opt_in_language_servers` in each language config stops Zed asking a
-server for completions where it does not belong:
+server for completions where it does not belong. `october-language-server` is exempt: it
+reads the whole template by design and only ever returns links, never completions.
 
-| Cursor is in | Servers queried |
+| Cursor is in | Servers queried for completion |
 |---|---|
 | INI header | none |
 | `<?php … ?>` | `intelephense` |

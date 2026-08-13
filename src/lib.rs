@@ -5,10 +5,12 @@
 //! buffer, not per injected layer. Every server declared here therefore
 //! receives the whole file. Two things keep that workable:
 //!
-//! * Each server is handed the LSP language id of the section it cares about
-//!   (see `language_ids` in extension.toml). The sections it does not care
-//!   about degrade to inert text: PHP treats everything outside `<?php ?>` as
-//!   inline HTML, and the HTML server treats the rest as text.
+//! * Each borrowed server is handed the LSP language id of the section it
+//!   cares about (see `language_ids` in extension.toml). The sections it does
+//!   not care about degrade to inert text: PHP treats everything outside
+//!   `<?php ?>` as inline HTML, and the HTML server treats the rest as text.
+//!   `october-language-server` is ours and reads the whole template on
+//!   purpose, so it needs no id mapping.
 //! * `scope_opt_in_language_servers` in the language configs stops Zed from
 //!   asking a server for completions in a section it has no business in — no
 //!   PHP completions in the INI header, no HTML tags inside `<?php ?>`.
@@ -40,6 +42,19 @@ use zed_extension_api::{
 const INTELEPHENSE: &str = "intelephense";
 const HTML: &str = "vscode-html-language-server";
 const EMMET: &str = "emmet-language-server";
+const OCTOBER: &str = "october-language-server";
+
+/// The document-link server, compiled into this wasm and written back out at
+/// startup.
+///
+/// It cannot simply be shipped as a file: the packager copies only
+/// `extension.toml`, `extension.wasm`, the grammars named in the manifest, the
+/// `languages/` dirs, themes, icons, debug-adapter schemas and snippets
+/// (`crates/extension_cli/src/main.rs`, `copy_extension_resources`). A stray
+/// `server/` directory is dropped from the published archive, so it would work
+/// as a dev extension and be missing for everyone who installs it.
+const OCTOBER_SERVER_JS: &str = include_str!("../server/october-language-server.js");
+const OCTOBER_SERVER_FILE: &str = "october-language-server.js";
 
 /// The npm package that provides a server, and the entry script it installs.
 fn npm_source(server_id: &str) -> Option<(&'static str, &'static str)> {
@@ -77,6 +92,10 @@ enum Server {
 impl OctoberExtension {
     fn locate(&mut self, server_id: &LanguageServerId, worktree: &zed::Worktree) -> Result<Server> {
         let id = server_id.as_ref();
+        if id == OCTOBER {
+            return Ok(Server::NodeScript(unpack_october_server()?));
+        }
+
         let (package, entry) =
             npm_source(id).ok_or_else(|| format!("unknown language server: {id}"))?;
 
@@ -124,6 +143,19 @@ fn absolute(path: &str) -> Result<String> {
         .join(path)
         .to_string_lossy()
         .into_owned())
+}
+
+/// Write the bundled document-link server into the extension work directory
+/// and return its path. Rewritten only when the contents differ, so upgrading
+/// the extension picks up a new server and a restart does not churn the disk.
+fn unpack_october_server() -> Result<String> {
+    let path = absolute(OCTOBER_SERVER_FILE)?;
+    let current = fs::read_to_string(&path).ok();
+    if current.as_deref() != Some(OCTOBER_SERVER_JS) {
+        fs::write(&path, OCTOBER_SERVER_JS)
+            .map_err(|err| format!("could not write {OCTOBER_SERVER_FILE}: {err}"))?;
+    }
+    Ok(path)
 }
 
 /// intelephense only indexes files whose name matches `files.associations`,
@@ -298,5 +330,23 @@ mod tests {
         assert!(npm_source("nonsense").is_none());
         // Twiggy was removed deliberately; see the module docs.
         assert!(npm_source("twiggy-language-server").is_none());
+        // Ours is bundled, not installed, so it must not claim an npm source.
+        assert!(npm_source(OCTOBER).is_none());
+    }
+
+    #[test]
+    fn bundled_server_is_a_document_link_server() {
+        assert!(
+            OCTOBER_SERVER_JS.contains("documentLinkProvider"),
+            "the bundled script does not advertise document links"
+        );
+        assert!(
+            OCTOBER_SERVER_JS.contains("textDocument/documentLink"),
+            "the bundled script does not answer documentLink"
+        );
+        assert!(
+            !OCTOBER_SERVER_JS.contains("require('vscode-languageserver"),
+            "the bundled script must stay dependency-free; there is no node_modules beside it"
+        );
     }
 }

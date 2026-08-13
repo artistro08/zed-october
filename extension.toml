@@ -16,6 +16,14 @@ version = "0.7.0"
 # language. `language_ids` is what tells each server which section to care
 # about; without it they would receive the id "october cms" and do nothing.
 
+# Ours. Turns `{% partial 'x' %}`, `{% content 'x' %}` and the INI `layout`
+# key into cmd-clickable links. Bundled inside extension.wasm and written back
+# out at startup; see OCTOBER_SERVER_JS in src/lib.rs. No `language_ids` entry
+# because this one ignores the id Zed sends it.
+[language_servers.october-language-server]
+name = "October Links"
+language = "October CMS"
+
 [language_servers.intelephense]
 name = "Intelephense"
 language = "October CMS"

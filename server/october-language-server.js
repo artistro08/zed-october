@@ -6,11 +6,9 @@
 // It answers exactly one LSP request, `textDocument/documentLink`, turning the
 // file references in a template into cmd-clickable links:
 //
-//     {% partial 'site/footer' %}       ->  <theme>/partials/site/footer.htm
-//     {% content 'contact.htm' %}       ->  <theme>/content/contact.htm
-//     {{ 'assets/css/app.css'|theme }}  ->  <theme>/assets/css/app.css
-//     {{ 'account/login'|page }}        ->  <theme>/pages/account/login.htm
-//     layout = "default"                ->  <theme>/layouts/default.htm
+//     {% partial 'site/footer' %}   ->  <theme>/partials/site/footer.htm
+//     {% content 'contact.htm' %}   ->  <theme>/content/contact.htm
+//     layout = "default"            ->  <theme>/layouts/default.htm
 //
 // Zed cannot do this without a server. Its cmd-click link support is driven by
 // `textDocument/documentLink` (crates/editor/src/hover_links.rs), and the
@@ -209,15 +207,6 @@ function resolve(chain, subdir, name, defaultExtension) {
 // markers and any trailing arguments.
 const TAG_REFERENCE = /\{%[-~]?\s*(partial|content)\s+(['"])([^'"]+)\2/g;
 
-// `'assets/css/app.css'|theme` and `'account/login'|page`.
-//
-// Only `theme` and `page`. `|media` points outside the theme, into the app's
-// storage directory, and in practice is always handed a variable
-// (`post.image|media`) rather than a literal. `|app` builds a URL from the site
-// root and names no file at all. Requiring a quoted string immediately before
-// the pipe is also what keeps `item.page|link` from matching.
-const FILTER_REFERENCE = /(['"])([^'"\n]+)\1\s*\|\s*(theme|page)\b/g;
-
 // `layout = "default"` in the INI section: start of line, before the first `==`.
 const INI_LAYOUT = /^[ \t]*layout[ \t]*=[ \t]*(['"])([^'"]+)\1/gm;
 
@@ -225,10 +214,6 @@ const KIND = {
   partial: { subdir: 'partials', extension: '.htm' },
   content: { subdir: 'content', extension: '.htm' },
   layout: { subdir: 'layouts', extension: '.htm' },
-  page: { subdir: 'pages', extension: '.htm' },
-  // `|theme` paths are relative to the theme root and already carry their own
-  // extension: `'assets/css/app.css'|theme`, never `'assets/css/app'|theme`.
-  theme: { subdir: '', extension: '' },
 };
 
 /** Byte offset -> LSP {line, character}, using a prebuilt line-start index. */
@@ -276,11 +261,6 @@ function documentLinks(text, filePath) {
   for (const match of text.matchAll(TAG_REFERENCE)) {
     const name = match[3];
     push(match[1], name, match.index + match[0].length - name.length - 1);
-  }
-
-  // The quoted name leads here, so it starts one past the opening quote.
-  for (const match of text.matchAll(FILTER_REFERENCE)) {
-    push(match[3], match[2], match.index + 1);
   }
 
   for (const match of text.matchAll(INI_LAYOUT)) {

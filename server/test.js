@@ -33,10 +33,6 @@ write(path.join(child, 'partials', 'account', 'initial_meeting.htm'));
 write(path.join(parent, 'partials', 'blog', 'header.htm'));
 write(path.join(child, 'content', 'contact.htm'));
 write(path.join(child, 'layouts', 'default.htm'));
-write(path.join(child, 'assets', 'css', 'styles.css'));
-write(path.join(child, 'assets', 'img', 'logo-2.svg'));
-write(path.join(parent, 'assets', 'js', 'vendor.js'));
-write(path.join(child, 'pages', 'account', 'login.htm'));
 
 const page = path.join(child, 'pages', 'home.htm');
 write(page);
@@ -59,14 +55,6 @@ const template = [
   "{% partial 'does/not/exist' %}",                  // unresolvable
   "{% partial '@form-select-state' %}",              // component partial, skipped
   "{% partial '../../../etc/passwd' %}",             // traversal, refused
-  "{{ 'assets/css/styles.css'|theme }}",             // theme asset
-  "{{ 'assets/img/logo-2.svg' | theme }}",           // spaces around the pipe
-  "{{ 'assets/js/vendor.js'|theme }}",               // parent theme fallback
-  "{{ 'account/login'|page }}",                      // page
-  "{{ 'assets/css/missing.css'|theme }}",            // unresolvable
-  '{{ post.image|media|resize(300) }}',              // variable, not a literal
-  '{{ item.page|link }}',                            // `.page` property, not the filter
-  "{{ '/'|app }}",                                   // a URL base, names no file
   '',
 ].join('\n');
 
@@ -80,42 +68,14 @@ for (const l of links) console.log(`  ${l.tooltip}  @ line ${l.range.start.line 
 
 // --- resolution -------------------------------------------------------------
 assert.deepStrictEqual(tooltips, [
-  'base/assets/js/vendor.js',
   'base/partials/blog/header.htm',
-  'child/assets/css/styles.css',
-  'child/assets/img/logo-2.svg',
   'child/content/contact.htm',
   'child/layouts/default.htm',
-  'child/pages/account/login.htm',
   'child/partials/account/initial_meeting.htm',
   'child/partials/account/sidebar.htm',
   'child/partials/header.htm',
   'child/partials/header.htm',
 ], 'unexpected set of resolved links');
-
-// `|theme` paths are theme-root relative and bring their own extension, so
-// nothing may be appended to them.
-assert.ok(
-  tooltips.includes('child/assets/css/styles.css'),
-  'a |theme asset resolves relative to the theme root',
-);
-assert.ok(
-  !tooltips.some((t) => t.endsWith('.css.htm') || t.endsWith('.svg.htm') || t.endsWith('.js.htm')),
-  '.htm must not be appended to an asset that already has an extension',
-);
-assert.ok(
-  tooltips.includes('base/assets/js/vendor.js'),
-  'assets fall through to the parent theme too',
-);
-// A property named `page` piped to something else is not the `|page` filter.
-assert.ok(
-  !links.some((l) => l.tooltip.includes('link')),
-  'item.page|link must not be treated as a page reference',
-);
-assert.ok(
-  !tooltips.some((t) => t.includes('missing.css')),
-  'an asset that does not exist produces no link',
-);
 
 assert.ok(
   targets.some((t) => rel(t) === 'themes/base/partials/blog/header.htm'),
@@ -146,11 +106,8 @@ for (const link of links) {
     lines[start.line].includes(`'${covered}'`) || lines[start.line].includes(`"${covered}"`),
     `range on line ${start.line + 1} covers ${JSON.stringify(covered)}, which is not a quoted name`,
   );
-  const expected = path.posix.basename(covered) + (path.extname(covered) ? '' : '.htm');
-  assert.ok(
-    link.tooltip.endsWith(expected),
-    `link for ${JSON.stringify(covered)} points at ${link.tooltip}, expected it to end with ${expected}`,
-  );
+  assert.ok(link.tooltip.endsWith(path.posix.basename(covered) + (path.extname(covered) ? '' : '.htm')),
+    `link for ${JSON.stringify(covered)} points at ${link.tooltip}`);
 }
 
 // `layout = "default"` in the INI header links; the same text in the PHP

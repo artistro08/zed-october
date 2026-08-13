@@ -15,8 +15,7 @@ Syntax highlighting, auto-indent, language servers and clickable partial links f
   `{% block %}`, …) indent their bodies and outdent their `{% end… %}`
 - Bracket matching, and autoclose for the Twig delimiters — type `{%` then a space and you
   get `{% | %}`, cursor in the middle, same for `{{ }}` and `{# #}`
-- Cmd-click a `{% partial %}`, `{% content %}`, `|theme` asset, `|page` link or INI `layout`
-  reference to open the file it names
+- Cmd-click a `{% partial %}`, `{% content %}` or INI `layout` reference to open the file
 - Language servers per section — PHP, HTML and Emmet — each scoped to the part of the
   template it understands (see [Language servers](#language-servers))
 - Support for `.htm` template files
@@ -56,7 +55,7 @@ needs to be patched.
 
 | Server | Serves | Source |
 |---|---|---|
-| `october-language-server` | clickable partial, asset, page and layout links | bundled in this extension |
+| `october-language-server` | clickable partial / content / layout links | bundled in this extension |
 | `intelephense` | PHP section | npm `intelephense` |
 | `vscode-html-language-server` | markup in the template section | npm `@zed-industries/vscode-langservers-extracted` |
 | `emmet-language-server` | abbreviations in the template section | npm `@olrtg/emmet-language-server` |
@@ -68,30 +67,24 @@ The npm ones install on first use; a copy already on your `PATH` is preferred.
 Cmd-click (ctrl-click on Linux/Windows) a template reference to open it:
 
 ```twig
-{% partial 'site/footer' %}         ->  <theme>/partials/site/footer.htm
-{% content 'contact.htm' %}         ->  <theme>/content/contact.htm
-{{ 'assets/css/app.css'|theme }}    ->  <theme>/assets/css/app.css
-{{ 'account/login'|page }}          ->  <theme>/pages/account/login.htm
-layout = "default"                  ->  <theme>/layouts/default.htm
+{% partial 'site/footer' %}     ->  <theme>/partials/site/footer.htm
+{% content 'contact.htm' %}     ->  <theme>/content/contact.htm
+layout = "default"              ->  <theme>/layouts/default.htm
 ```
 
 Resolution follows October's own rules: `.htm` is appended only when the reference does
-not already carry an extension — `|theme` asset paths are theme-root relative and bring
-their own — and anything the current theme does not have falls through to the theme named
-by `parent:` in its `theme.yaml`, up the whole chain. A link appears only when the file
-actually exists, so a reference that stays unstyled is a reference that will not resolve at
-runtime either.
+not already carry an extension, and a reference the current theme does not have falls
+through to the theme named by `parent:` in its `theme.yaml`, up the whole chain. A link
+appears only when the file actually exists, so a reference that stays unstyled is a
+reference that will not resolve at runtime either.
 
-Some forms are deliberately left alone:
+Two forms are deliberately left alone:
 
 - `{% partial '@name' %}` — a component partial. Resolving it means mapping the component
   alias in the INI section to a plugin's `components/` directory, which means reading that
   plugin's `registerComponents()` out of PHP. In a real theme this was 3 references out of 63.
 - `{% partial 'builder/sections/' ~ section.type %}` — the name is computed at runtime, so
   there is nothing to resolve statically.
-- `|media` and `|app`. `|media` points outside the theme into the app's storage directory
-  and in practice is always handed a variable (`post.image|media`); `|app` builds a URL
-  from the site root and names no file.
 
 This needs a language server: Zed's cmd-click support runs on LSP `textDocument/documentLink`,
 its built-in path detection only tries the string relative to the worktree root and to the

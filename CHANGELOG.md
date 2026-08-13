@@ -35,17 +35,15 @@ Initial release.
   because Zed fires a pair when the character you just typed is the last character of
   `start` and the buffer already holds the rest — so the space is the trigger.
 
-- **Clickable file links.** Cmd-click a `{% partial %}` or `{% content %}` reference, a
-  `|theme` asset, a `|page` link or the INI `layout` key to open the file it names.
-  Resolution follows October's rules: `.htm` is appended only when the reference lacks an
-  extension — `|theme` paths are theme-root relative and carry their own — and anything the
-  current theme does not have falls through the `parent:` chain in `theme.yaml`. A link
-  appears only when the target exists, so an unstyled reference is a broken one.
+- **Clickable partial links.** Cmd-click a `{% partial %}` or `{% content %}` reference, or
+  the INI `layout` key, to open the file it names. Resolution follows October's rules:
+  `.htm` is appended only when the reference lacks an extension, and anything the current
+  theme does not have falls through the `parent:` chain in `theme.yaml`. A link appears only
+  when the target exists, so an unstyled reference is a broken one.
 
-  Left alone: component partials (`{% partial '@name' %}`, which needs a plugin's
-  `registerComponents()` map out of PHP), runtime-computed names
-  (`{% partial 'sections/' ~ type %}`), and the `|media` and `|app` filters — `|media`
-  points outside the theme and is always given a variable, `|app` names no file.
+  Component partials (`{% partial '@name' %}`) and runtime-computed names
+  (`{% partial 'sections/' ~ type %}`) are left alone — the first needs a plugin's
+  `registerComponents()` map out of PHP, the second cannot be resolved statically.
 
   This needs a language server. Zed's cmd-click runs on LSP `textDocument/documentLink`, its
   built-in path detection only tries the string relative to the worktree root and the file's

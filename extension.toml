@@ -1,14 +1,52 @@
 id = "october"
 name = "October CMS"
-version = "0.3.0"
+version = "0.4.0"
 schema_version = 1
 authors = ["Devin Green <design@devingreen.me>"]
-description = "Syntax highlighting for October CMS templates in Zed"
+description = "Syntax highlighting and language servers for October CMS templates in Zed"
 repository = "https://github.com/artistro08/zed-october"
+
+[lib]
+kind = "Rust"
+version = "0.7.0"
+
+# Zed attaches language servers per buffer and resolves them by language name,
+# so a template's servers have to be declared here, against "October CMS" - an
+# extension cannot borrow a server another extension registered for its own
+# language. `language_ids` is what tells each server which section to care
+# about; without it they would receive the id "october cms" and do nothing.
+
+[language_servers.intelephense]
+name = "Intelephense"
+language = "October CMS"
+
+[language_servers.intelephense.language_ids]
+"October CMS" = "php"
+
+[language_servers.vscode-html-language-server]
+name = "HTML Language Server"
+language = "October CMS"
+
+[language_servers.vscode-html-language-server.language_ids]
+"October CMS" = "html"
+
+[language_servers.emmet-language-server]
+name = "Emmet Language Server"
+language = "October CMS"
+
+[language_servers.emmet-language-server.language_ids]
+"October CMS" = "html"
 
 [grammars.october]
 repository = "https://github.com/artistro08/tree-sitter-october"
 rev = "6085e31b3a904eb4f08b67fdd03f8436ee731825"
+
+# tree-sitter-html, pinned to the same revision Zed's HTML extension uses. The
+# markup layer is vendored as "October HTML" so its bracket pairs can include
+# the Twig delimiters; see languages/october-html/config.toml.
+[grammars.html]
+repository = "https://github.com/tree-sitter/tree-sitter-html"
+rev = "bfa075d83c6b97cd48440b3829ab8d24a2319809"
 
 [grammars.ini]
 repository = "https://github.com/justinmk/tree-sitter-ini"

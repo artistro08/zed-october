@@ -20,3 +20,12 @@ brackets = [
     { start = "<", end = ">", close = false, newline = true, not_in = ["comment", "string"] },
 ]
 word_characters = ["-"]
+
+# Inside `{% %}` and `{{ }}` only Twig completions make sense. Markup between
+# the tags is the injected HTML layer, where Emmet and the HTML server stay
+# available because this config no longer applies.
+scope_opt_in_language_servers = [
+    "intelephense",
+    "vscode-html-language-server",
+    "emmet-language-server",
+]

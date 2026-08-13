@@ -5,6 +5,14 @@ grammar = "ini"
 path_suffixes = []
 hidden = true
 line_comments = ["; ", "# "]
+
+# The INI header is not PHP or HTML. Listing a server here without any
+# override opting back into it stops Zed querying it in this section.
+scope_opt_in_language_servers = [
+    "intelephense",
+    "vscode-html-language-server",
+    "emmet-language-server",
+]
 autoclose_before = ":.,=}])>"
 brackets = [
     { start = "[", end = "]", close = true, newline = false },

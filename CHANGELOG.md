@@ -1,5 +1,58 @@
 # Changelog
 
+## [0.4.0] - 2026-08-12
+
+### Fixed
+- **`{%` autoclosed to `{%}`.** Zed takes bracket pairs from the syntax layer under the
+  cursor, and while you are typing `{%` the buffer still reads `{`, so that layer is the
+  injected markup one, not Twig. Zed's stock HTML config offers `{` → `}` and no `{%`. The
+  markup layer is now vendored as `October HTML` (`languages/october-html/`) with the Twig
+  delimiters in its bracket list, so `{%`, `{{` and `{#` close correctly. This also drops
+  the dependency on Zed's HTML extension being installed.
+
+### Added
+- **Language servers for each section.** `intelephense` for the PHP section, and
+  `vscode-html-language-server` plus `emmet-language-server` for the markup. Installed from
+  npm on first use; a copy already on `PATH` is preferred.
+
+  Zed resolves language servers by language name and attaches them per buffer, so a server
+  another extension registered for its own language cannot be borrowed — these have to be
+  declared here, against `October CMS`, which is why the Rust crate is back. `language_ids`
+  maps `October CMS` to the id each server expects (`php`, `html`); without that they would
+  receive `october cms` and do nothing.
+
+  All three therefore see the whole file. `scope_opt_in_language_servers` in the language
+  configs stops Zed querying a server outside its section: nothing in the INI header,
+  intelephense alone inside `<?php ?>`, HTML and Emmet in the markup.
+
+- `intelephense.files.associations` now includes `*.htm`. intelephense only indexes files
+  matching that list, so without it the PHP section was never indexed. A user-supplied list
+  is appended to rather than replaced, and both spellings are handled — the nested
+  `files.associations` and the flat VSCode-style `"intelephense.files.associations"`.
+
+- Documented the October YAML schemas from the
+  [October Code](https://github.com/SergeyKasyanov/vscode-october-extension) VSCode
+  extension. Point Zed's own yaml-language-server at them for completion, hover docs and
+  validation in `fields.yaml`, `columns.yaml`, `theme.yaml`, blueprints and the rest. They
+  live in user settings, not here: a `.yaml` file is Zed's YAML language, and an extension
+  can only configure servers it registers for its own language.
+
+### Changed
+- Emmet no longer requires patching the Emmet extension's own manifest — this extension
+  registers `emmet-language-server` for `October CMS` itself. Revert any local patch to
+  `extensions/installed/emmet/extension.toml`; leaving it in place registers the server
+  twice for the same language.
+
+### Not included
+- **No Twig language server.** `twiggy-language-server` was tried and dropped. It reports
+  `Unexpected syntax` on any node its parser rejects, and Zed hands it the whole buffer, so
+  it flagged the INI header of every page that binds a route parameter
+  (`pageNumber = "{{ :page }}"`) as well as October's named tag parameters
+  (`{% partial 'footer' year=2026 %}`). Neither is valid upstream Twig and the warning is
+  not configurable — twiggy exposes only a `twigCsFixer` toggle. It could not resolve
+  `{% partial %}` or `{% component %}` paths either, so it was a false-positive generator
+  with nothing to offset it.
+
 ## [0.3.0] - 2026-08-11
 
 ### Fixed

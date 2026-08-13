@@ -1,0 +1,33 @@
+# The markup between Twig tags. This is Zed's HTML language config with the
+# Twig delimiter pairs added.
+#
+# It has to be vendored rather than injecting the stock `html` language: Zed
+# takes bracket pairs from the syntax layer under the cursor, and while you are
+# typing `{%` the cursor is still inside the HTML-injected range — the `{` only
+# becomes part of a Twig tag once the `%` lands. With the stock config that
+# scope offers `{` -> `}` and no `{%`, so `{%` produced `{%}`.
+name = "October HTML"
+grammar = "html"
+path_suffixes = []
+hidden = true
+block_comment = { start = "<!--", prefix = "", end = "-->", tab_size = 0 }
+autoclose_before = "}])>"
+wrap_characters = { start_prefix = "<", start_suffix = ">", end_prefix = "</", end_suffix = ">" }
+brackets = [
+    # Twig delimiters first: a bare `{` pair would match on the opening brace
+    # and turn a typed `{{` into `{{}}}`.
+    { start = "{{", end = "}}", close = true, newline = false },
+    { start = "{%", end = "%}", close = true, newline = false },
+    { start = "{#", end = "#}", close = true, newline = false },
+    { start = "[", end = "]", close = true, newline = true },
+    { start = "(", end = ")", close = true, newline = true },
+    { start = "\"", end = "\"", close = true, newline = false, not_in = ["comment", "string"] },
+    { start = "'", end = "'", close = true, newline = false, not_in = ["comment", "string"] },
+    { start = "<", end = ">", close = false, newline = true, not_in = ["comment", "string"] },
+    { start = "!--", end = " --", close = true, newline = false, not_in = ["comment", "string"] },
+]
+completion_query_characters = ["-"]
+word_characters = ["-"]
+
+[overrides.default]
+linked_edit_characters = ["-"]

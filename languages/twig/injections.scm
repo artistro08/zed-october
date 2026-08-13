@@ -4,5 +4,5 @@
 ; no such nodes, and one bad node name fails the whole query, which drops the
 ; language.
 ((content) @injection.content
-  (#set! injection.language "html")
+  (#set! injection.language "October HTML")
   (#set! injection.combined))

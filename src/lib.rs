@@ -198,7 +198,42 @@ fn ensure_htm_indexed(settings: Option<Value>) -> Result<Value> {
             .insert("associations".into(), json!(DEFAULTS));
     }
 
+    disable_language_constraints(object)?;
+
     Ok(settings)
+}
+
+/// October compiles the PHP section into a method body of a generated page
+/// class, so `$this` (and other class-context syntax) is valid at runtime but
+/// not statically — intelephense sees a bare top-level function and reports
+/// "Cannot use $this in non-object context". This instance of intelephense
+/// only ever attaches to `.htm` buffers (see module docs), so turning this
+/// category off here does not touch diagnostics for real `.php` files
+/// elsewhere in the project.
+fn disable_language_constraints(object: &mut Map<String, Value>) -> Result<()> {
+    const FLAT_KEY: &str = "intelephense.diagnostics.languageConstraints";
+
+    if object.contains_key(FLAT_KEY) {
+        return Ok(());
+    }
+
+    if let Some(diagnostics) = object.get("diagnostics") {
+        if diagnostics
+            .as_object()
+            .is_some_and(|d| d.contains_key("languageConstraints"))
+        {
+            return Ok(());
+        }
+    }
+
+    object
+        .entry("diagnostics")
+        .or_insert_with(|| Value::Object(Map::new()))
+        .as_object_mut()
+        .ok_or("lsp.intelephense.settings.diagnostics must be an object")?
+        .insert("languageConstraints".into(), json!(false));
+
+    Ok(())
 }
 
 fn append_htm(associations: &mut Vec<Value>) {
@@ -320,6 +355,28 @@ mod tests {
         );
 
         assert!(ensure_htm_indexed(Some(json!("nope"))).is_err());
+    }
+
+    #[test]
+    fn disables_language_constraints_unless_the_user_set_it() {
+        let defaulted = ensure_htm_indexed(None).unwrap();
+        assert_eq!(defaulted["diagnostics"]["languageConstraints"], json!(false));
+
+        // Nested override respected.
+        let nested = json!({ "diagnostics": { "languageConstraints": true } });
+        assert_eq!(
+            ensure_htm_indexed(Some(nested)).unwrap()["diagnostics"]["languageConstraints"],
+            json!(true)
+        );
+
+        // Flat, VSCode-style override respected too.
+        let flat = json!({ "intelephense.diagnostics.languageConstraints": true });
+        let merged = ensure_htm_indexed(Some(flat)).unwrap();
+        assert_eq!(
+            merged["intelephense.diagnostics.languageConstraints"],
+            json!(true)
+        );
+        assert!(merged.get("diagnostics").is_none());
     }
 
     #[test]
